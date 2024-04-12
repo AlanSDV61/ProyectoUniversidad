@@ -79,6 +79,29 @@ namespace ProyectoUniversidad.Migrations
 
                     b.ToTable("Estudiantes");
                 });
+
+            modelBuilder.Entity("ProyectoUniversidad.Models.Servicio", b =>
+                {
+                    b.Property<int>("servicio_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("servicio_id"));
+
+                    b.Property<decimal>("servicio_costo")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("servicio_nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("servicio_id");
+
+                    b.HasIndex("servicio_nombre")
+                        .IsUnique();
+
+                    b.ToTable("Servicios");
+                });
 #pragma warning restore 612, 618
         }
     }
