@@ -12,8 +12,8 @@ using ProyectoUniversidad.Context;
 namespace ProyectoUniversidad.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240413050806_Migracion")]
-    partial class Migracion
+    [Migration("20240414035717_PK")]
+    partial class PK
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,23 @@ namespace ProyectoUniversidad.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("ProyectoUniversidad.Models.Asignatura_seleccion", b =>
+                {
+                    b.Property<int>("seleccion_id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("asignatura_id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("calificacion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("seleccion_id", "asignatura_id");
+
+                    b.ToTable("Asignatura_seleccion");
+                });
 
             modelBuilder.Entity("ProyectoUniversidad.Models.Cuenta", b =>
                 {
@@ -39,16 +56,46 @@ namespace ProyectoUniversidad.Migrations
 
                     b.Property<string>("cuenta_nombre")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("rol_id")
                         .HasColumnType("int");
 
                     b.HasKey("cuenta_id");
 
-                    b.HasIndex("rol_id");
+                    b.HasIndex("cuenta_nombre")
+                        .IsUnique();
 
                     b.ToTable("Cuentas");
+                });
+
+            modelBuilder.Entity("ProyectoUniversidad.Models.Cuentas_cobrar", b =>
+                {
+                    b.Property<int>("cuenta_cobrar_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("cuenta_cobrar_id"));
+
+                    b.Property<string>("cuenta_estado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("cuenta_monto_pendiente")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("cuenta_monto_total")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("estudiante_id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("seleccion_id")
+                        .HasColumnType("int");
+
+                    b.HasKey("cuenta_cobrar_id");
+
+                    b.ToTable("Cuentas_cobrar");
                 });
 
             modelBuilder.Entity("ProyectoUniversidad.Models.Estudiante", b =>
@@ -106,13 +153,93 @@ namespace ProyectoUniversidad.Migrations
 
                     b.HasKey("estudiante_id");
 
-                    b.HasIndex("carrera_id");
-
-                    b.HasIndex("cuenta_id");
-
-                    b.HasIndex("tipo_documento_id");
-
                     b.ToTable("Estudiantes");
+                });
+
+            modelBuilder.Entity("ProyectoUniversidad.Models.Factura_Servicio", b =>
+                {
+                    b.Property<int>("factura_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("factura_id"));
+
+                    b.Property<int>("estudiante_id")
+                        .HasColumnType("int");
+
+                    b.Property<DateOnly>("factura_fecha")
+                        .HasColumnType("date");
+
+                    b.Property<decimal>("factura_monto")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("metodo_pago_id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("servicio_id")
+                        .HasColumnType("int");
+
+                    b.HasKey("factura_id");
+
+                    b.ToTable("Factura_servicio");
+                });
+
+            modelBuilder.Entity("ProyectoUniversidad.Models.Factura_pago", b =>
+                {
+                    b.Property<int>("pago_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("pago_id"));
+
+                    b.Property<int>("cuenta_cobrar_id")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("factura_monto")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateOnly>("fecha_factura")
+                        .HasColumnType("date");
+
+                    b.Property<int>("metodo_pago_id")
+                        .HasColumnType("int");
+
+                    b.HasKey("pago_id");
+
+                    b.ToTable("Factura_pago");
+                });
+
+            modelBuilder.Entity("ProyectoUniversidad.Models.Metodo_pago", b =>
+                {
+                    b.Property<int>("metodo_pago_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("metodo_pago_id"));
+
+                    b.Property<string>("nombre_metodo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("metodo_pago_id");
+
+                    b.ToTable("Metodo_pago");
+                });
+
+            modelBuilder.Entity("ProyectoUniversidad.Models.Pensum", b =>
+                {
+                    b.Property<int>("carrera_id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("asignatura_id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("pensum_trimestre")
+                        .HasColumnType("int");
+
+                    b.HasKey("carrera_id", "asignatura_id");
+
+                    b.ToTable("Pensum");
                 });
 
             modelBuilder.Entity("ProyectoUniversidad.Models.Profesor", b =>
@@ -142,10 +269,6 @@ namespace ProyectoUniversidad.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("profesor_id");
-
-                    b.HasIndex("id_cuenta");
-
-                    b.HasIndex("tipo_documento_id");
 
                     b.ToTable("Profesors");
                 });
@@ -214,8 +337,6 @@ namespace ProyectoUniversidad.Migrations
 
                     b.HasKey("asignatura_id");
 
-                    b.HasIndex("profesor_id");
-
                     b.ToTable("Asignaturas");
                 });
 
@@ -257,8 +378,9 @@ namespace ProyectoUniversidad.Migrations
                     b.Property<int>("seleccion_creditos")
                         .HasColumnType("int");
 
-                    b.Property<int>("seleccion_estado")
-                        .HasColumnType("int");
+                    b.Property<string>("seleccion_estado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("seleccion_indice")
                         .HasColumnType("decimal(18,2)");
@@ -267,8 +389,6 @@ namespace ProyectoUniversidad.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("seleccion_id");
-
-                    b.HasIndex("estudiante_id");
 
                     b.ToTable("Seleccions");
                 });
@@ -288,85 +408,6 @@ namespace ProyectoUniversidad.Migrations
                     b.HasKey("tipo_documento_id");
 
                     b.ToTable("Tipo_documentos");
-                });
-
-            modelBuilder.Entity("ProyectoUniversidad.Models.Cuenta", b =>
-                {
-                    b.HasOne("ProyectoUniversidad.Models.Rol", "Rol")
-                        .WithMany()
-                        .HasForeignKey("rol_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Rol");
-                });
-
-            modelBuilder.Entity("ProyectoUniversidad.Models.Estudiante", b =>
-                {
-                    b.HasOne("UniversidadAPI.Models.Carrera", "Carrera")
-                        .WithMany()
-                        .HasForeignKey("carrera_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ProyectoUniversidad.Models.Cuenta", "Cuenta")
-                        .WithMany()
-                        .HasForeignKey("cuenta_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("UniversidadAPI.Models.Tipo_documento", "Tipo_documento")
-                        .WithMany()
-                        .HasForeignKey("tipo_documento_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Carrera");
-
-                    b.Navigation("Cuenta");
-
-                    b.Navigation("Tipo_documento");
-                });
-
-            modelBuilder.Entity("ProyectoUniversidad.Models.Profesor", b =>
-                {
-                    b.HasOne("ProyectoUniversidad.Models.Cuenta", "Cuenta")
-                        .WithMany()
-                        .HasForeignKey("id_cuenta")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("UniversidadAPI.Models.Tipo_documento", "Tipo_documento")
-                        .WithMany()
-                        .HasForeignKey("tipo_documento_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cuenta");
-
-                    b.Navigation("Tipo_documento");
-                });
-
-            modelBuilder.Entity("UniversidadAPI.Models.Asignatura", b =>
-                {
-                    b.HasOne("ProyectoUniversidad.Models.Profesor", "Profesor")
-                        .WithMany()
-                        .HasForeignKey("profesor_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Profesor");
-                });
-
-            modelBuilder.Entity("UniversidadAPI.Models.Seleccion", b =>
-                {
-                    b.HasOne("ProyectoUniversidad.Models.Estudiante", "Estudiante")
-                        .WithMany()
-                        .HasForeignKey("estudiante_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Estudiante");
                 });
 #pragma warning restore 612, 618
         }

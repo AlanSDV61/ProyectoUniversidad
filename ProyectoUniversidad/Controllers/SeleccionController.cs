@@ -43,7 +43,6 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // PUT: api/Seleccion/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutSeleccion(int id, Seleccion seleccion)
         {
@@ -74,7 +73,6 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // POST: api/Seleccion
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Seleccion>> PostSeleccion(Seleccion seleccion)
         {

@@ -43,7 +43,6 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // PUT: api/Tipo_documento/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTipo_documento(int id, Tipo_documento tipo_documento)
         {
@@ -74,7 +73,6 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // POST: api/Tipo_documento
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Tipo_documento>> PostTipo_documento(Tipo_documento tipo_documento)
         {

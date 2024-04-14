@@ -43,7 +43,6 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // PUT: api/Profesor/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProfesor(int id, Profesor profesor)
         {
@@ -74,7 +73,6 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // POST: api/Profesor
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Profesor>> PostProfesor(Profesor profesor)
         {

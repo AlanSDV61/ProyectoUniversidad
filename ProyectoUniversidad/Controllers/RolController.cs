@@ -43,7 +43,6 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // PUT: api/Rol/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutRol(int id, Rol rol)
         {
@@ -74,7 +73,6 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // POST: api/Rol
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Rol>> PostRol(Rol rol)
         {

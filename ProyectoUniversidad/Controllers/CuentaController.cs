@@ -43,7 +43,6 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // PUT: api/Cuenta/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCuenta(int id, Cuenta cuenta)
         {
@@ -74,7 +73,6 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // POST: api/Cuenta
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Cuenta>> PostCuenta(Cuenta cuenta)
         {

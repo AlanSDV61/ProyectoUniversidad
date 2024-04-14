@@ -1,23 +1,29 @@
 using Microsoft.EntityFrameworkCore;
 using ProyectoUniversidad.Context;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // crear variable para el connectionstring
-
 var connectionString = builder.Configuration.GetConnectionString("Connection");
 builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlServer(connectionString));
 
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.File("logs/myapp.txt", rollingInterval: RollingInterval.Day)
+            .CreateLogger();
+
+Log.Information("Servicio iniciado");
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -31,3 +37,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+
