@@ -23,16 +23,16 @@ namespace ProyectoUniversidad.Controllers
 
         // GET: api/Seleccion
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Seleccion>>> GetSeleccions()
+        public async Task<ActionResult<IEnumerable<Seleccion>>> GetSeleccion()
         {
-            return await _context.Seleccions.ToListAsync();
+            return await _context.Seleccion.ToListAsync();
         }
 
         // GET: api/Seleccion/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Seleccion>> GetSeleccion(int id)
         {
-            var seleccion = await _context.Seleccions.FindAsync(id);
+            var seleccion = await _context.Seleccion.FindAsync(id);
 
             if (seleccion == null)
             {
@@ -43,6 +43,7 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // PUT: api/Seleccion/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutSeleccion(int id, Seleccion seleccion)
         {
@@ -73,10 +74,11 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // POST: api/Seleccion
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Seleccion>> PostSeleccion(Seleccion seleccion)
         {
-            _context.Seleccions.Add(seleccion);
+            _context.Seleccion.Add(seleccion);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetSeleccion", new { id = seleccion.seleccion_id }, seleccion);
@@ -86,13 +88,13 @@ namespace ProyectoUniversidad.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSeleccion(int id)
         {
-            var seleccion = await _context.Seleccions.FindAsync(id);
+            var seleccion = await _context.Seleccion.FindAsync(id);
             if (seleccion == null)
             {
                 return NotFound();
             }
 
-            _context.Seleccions.Remove(seleccion);
+            _context.Seleccion.Remove(seleccion);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -100,7 +102,7 @@ namespace ProyectoUniversidad.Controllers
 
         private bool SeleccionExists(int id)
         {
-            return _context.Seleccions.Any(e => e.seleccion_id == id);
+            return _context.Seleccion.Any(e => e.seleccion_id == id);
         }
     }
 }

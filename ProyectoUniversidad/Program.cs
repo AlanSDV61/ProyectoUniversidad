@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // crear variable para el connectionstring
-var connectionString = builder.Configuration.GetConnectionString("Connection");
+var connectionString = builder.Configuration.GetConnectionString("ConnectionAWS");
 builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlServer(connectionString));
 
 

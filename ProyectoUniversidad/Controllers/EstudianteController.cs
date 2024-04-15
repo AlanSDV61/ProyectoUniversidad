@@ -23,16 +23,16 @@ namespace ProyectoUniversidad.Controllers
 
         // GET: api/Estudiante
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Estudiante>>> GetEstudiantes()
+        public async Task<ActionResult<IEnumerable<Estudiante>>> GetEstudiante()
         {
-            return await _context.Estudiantes.ToListAsync();
+            return await _context.Estudiante.ToListAsync();
         }
 
         // GET: api/Estudiante/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Estudiante>> GetEstudiante(int id)
         {
-            var estudiante = await _context.Estudiantes.FindAsync(id);
+            var estudiante = await _context.Estudiante.FindAsync(id);
 
             if (estudiante == null)
             {
@@ -43,6 +43,7 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // PUT: api/Estudiante/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutEstudiante(int id, Estudiante estudiante)
         {
@@ -73,10 +74,11 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // POST: api/Estudiante
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Estudiante>> PostEstudiante(Estudiante estudiante)
         {
-            _context.Estudiantes.Add(estudiante);
+            _context.Estudiante.Add(estudiante);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetEstudiante", new { id = estudiante.estudiante_id }, estudiante);
@@ -86,13 +88,13 @@ namespace ProyectoUniversidad.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEstudiante(int id)
         {
-            var estudiante = await _context.Estudiantes.FindAsync(id);
+            var estudiante = await _context.Estudiante.FindAsync(id);
             if (estudiante == null)
             {
                 return NotFound();
             }
 
-            _context.Estudiantes.Remove(estudiante);
+            _context.Estudiante.Remove(estudiante);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -100,7 +102,7 @@ namespace ProyectoUniversidad.Controllers
 
         private bool EstudianteExists(int id)
         {
-            return _context.Estudiantes.Any(e => e.estudiante_id == id);
+            return _context.Estudiante.Any(e => e.estudiante_id == id);
         }
     }
 }

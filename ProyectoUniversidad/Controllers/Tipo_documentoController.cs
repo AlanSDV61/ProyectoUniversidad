@@ -23,16 +23,16 @@ namespace ProyectoUniversidad.Controllers
 
         // GET: api/Tipo_documento
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Tipo_documento>>> GetTipo_documentos()
+        public async Task<ActionResult<IEnumerable<Tipo_documento>>> GetTipo_documento()
         {
-            return await _context.Tipo_documentos.ToListAsync();
+            return await _context.Tipo_documento.ToListAsync();
         }
 
         // GET: api/Tipo_documento/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Tipo_documento>> GetTipo_documento(int id)
         {
-            var tipo_documento = await _context.Tipo_documentos.FindAsync(id);
+            var tipo_documento = await _context.Tipo_documento.FindAsync(id);
 
             if (tipo_documento == null)
             {
@@ -43,6 +43,7 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // PUT: api/Tipo_documento/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTipo_documento(int id, Tipo_documento tipo_documento)
         {
@@ -73,10 +74,11 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // POST: api/Tipo_documento
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Tipo_documento>> PostTipo_documento(Tipo_documento tipo_documento)
         {
-            _context.Tipo_documentos.Add(tipo_documento);
+            _context.Tipo_documento.Add(tipo_documento);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetTipo_documento", new { id = tipo_documento.tipo_documento_id }, tipo_documento);
@@ -86,13 +88,13 @@ namespace ProyectoUniversidad.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTipo_documento(int id)
         {
-            var tipo_documento = await _context.Tipo_documentos.FindAsync(id);
+            var tipo_documento = await _context.Tipo_documento.FindAsync(id);
             if (tipo_documento == null)
             {
                 return NotFound();
             }
 
-            _context.Tipo_documentos.Remove(tipo_documento);
+            _context.Tipo_documento.Remove(tipo_documento);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -100,7 +102,7 @@ namespace ProyectoUniversidad.Controllers
 
         private bool Tipo_documentoExists(int id)
         {
-            return _context.Tipo_documentos.Any(e => e.tipo_documento_id == id);
+            return _context.Tipo_documento.Any(e => e.tipo_documento_id == id);
         }
     }
 }

@@ -21,18 +21,18 @@ namespace ProyectoUniversidad.Controllers
             _context = context;
         }
 
-        // GET: api/Carreras
+        // GET: api/Carrera
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Carrera>>> GetCarreras()
+        public async Task<ActionResult<IEnumerable<Carrera>>> GetCarrera()
         {
-            return await _context.Carreras.ToListAsync();
+            return await _context.Carrera.ToListAsync();
         }
 
-        // GET: api/Carreras/5
+        // GET: api/Carrera/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Carrera>> GetCarrera(int id)
         {
-            var carrera = await _context.Carreras.FindAsync(id);
+            var carrera = await _context.Carrera.FindAsync(id);
 
             if (carrera == null)
             {
@@ -42,7 +42,8 @@ namespace ProyectoUniversidad.Controllers
             return carrera;
         }
 
-        // PUT: api/Carreras/5
+        // PUT: api/Carrera/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCarrera(int id, Carrera carrera)
         {
@@ -72,27 +73,28 @@ namespace ProyectoUniversidad.Controllers
             return NoContent();
         }
 
-        // POST: api/Carreras
+        // POST: api/Carrera
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Carrera>> PostCarrera(Carrera carrera)
         {
-            _context.Carreras.Add(carrera);
+            _context.Carrera.Add(carrera);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetCarrera", new { id = carrera.carrera_id }, carrera);
         }
 
-        // DELETE: api/Carreras/5
+        // DELETE: api/Carrera/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCarrera(int id)
         {
-            var carrera = await _context.Carreras.FindAsync(id);
+            var carrera = await _context.Carrera.FindAsync(id);
             if (carrera == null)
             {
                 return NotFound();
             }
 
-            _context.Carreras.Remove(carrera);
+            _context.Carrera.Remove(carrera);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -100,7 +102,7 @@ namespace ProyectoUniversidad.Controllers
 
         private bool CarreraExists(int id)
         {
-            return _context.Carreras.Any(e => e.carrera_id == id);
+            return _context.Carrera.Any(e => e.carrera_id == id);
         }
     }
 }

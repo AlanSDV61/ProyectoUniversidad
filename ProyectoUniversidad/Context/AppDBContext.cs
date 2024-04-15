@@ -12,15 +12,15 @@ namespace ProyectoUniversidad.Context
                 
         }
 
-        public DbSet<Estudiante> Estudiantes { get; set; }
-        public DbSet<Servicio> Servicios { get; set; }
-        public DbSet<Asignatura> Asignaturas { get; set; }
-        public DbSet<Carrera> Carreras { get; set; }
-        public DbSet<Cuenta> Cuentas { get; set; }
-        public DbSet<Profesor> Profesors { get; set; }
-        public DbSet<Rol> Rols { get; set; }
-        public DbSet<Seleccion> Seleccions { get; set; }
-        public DbSet<Tipo_documento> Tipo_documentos { get; set; }
+        public DbSet<Estudiante> Estudiante { get; set; }
+        public DbSet<Servicio> Servicio { get; set; }
+        public DbSet<Asignatura> Asignatura { get; set; }
+        public DbSet<Carrera> Carrera { get; set; }
+        public DbSet<Cuenta> Cuenta { get; set; }
+        public DbSet<Profesor> Profesor { get; set; }
+        public DbSet<Rol> Rol { get; set; }
+        public DbSet<Seleccion> Seleccion { get; set; }
+        public DbSet<Tipo_documento> Tipo_documento { get; set; }
         public DbSet<Metodo_pago> Metodo_pago {  get; set; }
         public DbSet<Cuentas_cobrar> Cuentas_cobrar { get; set; }
         public DbSet<Factura_pago> Factura_pago { get; set; }
@@ -64,6 +64,8 @@ namespace ProyectoUniversidad.Context
                 .HasKey(p => new { p.seleccion_id, p.asignatura_id });
 
             //base.OnModelCreating(modelBuilder);
+
+            //modelBuilder.Entity<Tipo_documento>().ToTable("Tipo_documento", schema: "dbo");
         }
 
     }

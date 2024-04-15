@@ -23,16 +23,16 @@ namespace ProyectoUniversidad.Controllers
 
         // GET: api/Cuenta
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Cuenta>>> GetCuentas()
+        public async Task<ActionResult<IEnumerable<Cuenta>>> GetCuenta()
         {
-            return await _context.Cuentas.ToListAsync();
+            return await _context.Cuenta.ToListAsync();
         }
 
         // GET: api/Cuenta/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Cuenta>> GetCuenta(int id)
         {
-            var cuenta = await _context.Cuentas.FindAsync(id);
+            var cuenta = await _context.Cuenta.FindAsync(id);
 
             if (cuenta == null)
             {
@@ -43,6 +43,7 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // PUT: api/Cuenta/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCuenta(int id, Cuenta cuenta)
         {
@@ -73,10 +74,11 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // POST: api/Cuenta
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Cuenta>> PostCuenta(Cuenta cuenta)
         {
-            _context.Cuentas.Add(cuenta);
+            _context.Cuenta.Add(cuenta);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetCuenta", new { id = cuenta.cuenta_id }, cuenta);
@@ -86,13 +88,13 @@ namespace ProyectoUniversidad.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCuenta(int id)
         {
-            var cuenta = await _context.Cuentas.FindAsync(id);
+            var cuenta = await _context.Cuenta.FindAsync(id);
             if (cuenta == null)
             {
                 return NotFound();
             }
 
-            _context.Cuentas.Remove(cuenta);
+            _context.Cuenta.Remove(cuenta);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -100,7 +102,7 @@ namespace ProyectoUniversidad.Controllers
 
         private bool CuentaExists(int id)
         {
-            return _context.Cuentas.Any(e => e.cuenta_id == id);
+            return _context.Cuenta.Any(e => e.cuenta_id == id);
         }
     }
 }

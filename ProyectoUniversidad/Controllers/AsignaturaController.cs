@@ -23,16 +23,16 @@ namespace ProyectoUniversidad.Controllers
 
         // GET: api/Asignatura
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Asignatura>>> GetAsignaturas()
+        public async Task<ActionResult<IEnumerable<Asignatura>>> GetAsignatura()
         {
-            return await _context.Asignaturas.ToListAsync();
+            return await _context.Asignatura.ToListAsync();
         }
 
         // GET: api/Asignatura/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Asignatura>> GetAsignatura(int id)
         {
-            var asignatura = await _context.Asignaturas.FindAsync(id);
+            var asignatura = await _context.Asignatura.FindAsync(id);
 
             if (asignatura == null)
             {
@@ -43,6 +43,7 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // PUT: api/Asignatura/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAsignatura(int id, Asignatura asignatura)
         {
@@ -73,10 +74,11 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // POST: api/Asignatura
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Asignatura>> PostAsignatura(Asignatura asignatura)
         {
-            _context.Asignaturas.Add(asignatura);
+            _context.Asignatura.Add(asignatura);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetAsignatura", new { id = asignatura.asignatura_id }, asignatura);
@@ -86,13 +88,13 @@ namespace ProyectoUniversidad.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsignatura(int id)
         {
-            var asignatura = await _context.Asignaturas.FindAsync(id);
+            var asignatura = await _context.Asignatura.FindAsync(id);
             if (asignatura == null)
             {
                 return NotFound();
             }
 
-            _context.Asignaturas.Remove(asignatura);
+            _context.Asignatura.Remove(asignatura);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -100,7 +102,7 @@ namespace ProyectoUniversidad.Controllers
 
         private bool AsignaturaExists(int id)
         {
-            return _context.Asignaturas.Any(e => e.asignatura_id == id);
+            return _context.Asignatura.Any(e => e.asignatura_id == id);
         }
     }
 }

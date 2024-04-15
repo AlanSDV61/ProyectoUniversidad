@@ -23,16 +23,16 @@ namespace ProyectoUniversidad.Controllers
 
         // GET: api/Profesor
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Profesor>>> GetProfesors()
+        public async Task<ActionResult<IEnumerable<Profesor>>> GetProfesor()
         {
-            return await _context.Profesors.ToListAsync();
+            return await _context.Profesor.ToListAsync();
         }
 
         // GET: api/Profesor/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Profesor>> GetProfesor(int id)
         {
-            var profesor = await _context.Profesors.FindAsync(id);
+            var profesor = await _context.Profesor.FindAsync(id);
 
             if (profesor == null)
             {
@@ -43,6 +43,7 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // PUT: api/Profesor/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProfesor(int id, Profesor profesor)
         {
@@ -73,10 +74,11 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // POST: api/Profesor
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Profesor>> PostProfesor(Profesor profesor)
         {
-            _context.Profesors.Add(profesor);
+            _context.Profesor.Add(profesor);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetProfesor", new { id = profesor.profesor_id }, profesor);
@@ -86,13 +88,13 @@ namespace ProyectoUniversidad.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProfesor(int id)
         {
-            var profesor = await _context.Profesors.FindAsync(id);
+            var profesor = await _context.Profesor.FindAsync(id);
             if (profesor == null)
             {
                 return NotFound();
             }
 
-            _context.Profesors.Remove(profesor);
+            _context.Profesor.Remove(profesor);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -100,7 +102,7 @@ namespace ProyectoUniversidad.Controllers
 
         private bool ProfesorExists(int id)
         {
-            return _context.Profesors.Any(e => e.profesor_id == id);
+            return _context.Profesor.Any(e => e.profesor_id == id);
         }
     }
 }

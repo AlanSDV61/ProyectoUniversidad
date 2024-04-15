@@ -23,16 +23,16 @@ namespace ProyectoUniversidad.Controllers
 
         // GET: api/Servicio
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Servicio>>> GetServicios()
+        public async Task<ActionResult<IEnumerable<Servicio>>> GetServicio()
         {
-            return await _context.Servicios.ToListAsync();
+            return await _context.Servicio.ToListAsync();
         }
 
         // GET: api/Servicio/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Servicio>> GetServicio(int id)
         {
-            var servicio = await _context.Servicios.FindAsync(id);
+            var servicio = await _context.Servicio.FindAsync(id);
 
             if (servicio == null)
             {
@@ -43,6 +43,7 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // PUT: api/Servicio/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutServicio(int id, Servicio servicio)
         {
@@ -73,10 +74,11 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // POST: api/Servicio
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Servicio>> PostServicio(Servicio servicio)
         {
-            _context.Servicios.Add(servicio);
+            _context.Servicio.Add(servicio);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetServicio", new { id = servicio.servicio_id }, servicio);
@@ -86,13 +88,13 @@ namespace ProyectoUniversidad.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteServicio(int id)
         {
-            var servicio = await _context.Servicios.FindAsync(id);
+            var servicio = await _context.Servicio.FindAsync(id);
             if (servicio == null)
             {
                 return NotFound();
             }
 
-            _context.Servicios.Remove(servicio);
+            _context.Servicio.Remove(servicio);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -100,7 +102,7 @@ namespace ProyectoUniversidad.Controllers
 
         private bool ServicioExists(int id)
         {
-            return _context.Servicios.Any(e => e.servicio_id == id);
+            return _context.Servicio.Any(e => e.servicio_id == id);
         }
     }
 }
