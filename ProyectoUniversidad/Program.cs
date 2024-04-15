@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ProyectoUniversidad.Context;
+using ProyectoUniversidad.Extensions;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ConnectionAWS");
 builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlServer(connectionString));
 
+var MyAllowSpecifiOrigins = "_MyAllowSpecifiOrigins";
+builder.Services.ConfigurarCORS(MyAllowSpecifiOrigins);
 
 builder.Services.AddControllers();
 
@@ -33,6 +36,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseCors(MyAllowSpecifiOrigins);
 
 app.MapControllers();
 
