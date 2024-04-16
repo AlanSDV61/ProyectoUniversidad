@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProyectoUniversidad.Context;
 using ProyectoUniversidad.Models;
+using Serilog;
 
 namespace ProyectoUniversidad.Controllers
 {
@@ -25,6 +26,7 @@ namespace ProyectoUniversidad.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Asignatura_seleccion>>> GetAsignatura_seleccion()
         {
+            Log.Information("Get Asignatura_seleccion solicitado");
             return await _context.Asignatura_seleccion.ToListAsync();
         }
 
@@ -38,7 +40,7 @@ namespace ProyectoUniversidad.Controllers
             {
                 return NotFound();
             }
-
+            Log.Information($"Get Asignatura_seleccion, id{id} solicitado");
             return asignatura_seleccion;
         }
 
@@ -57,6 +59,7 @@ namespace ProyectoUniversidad.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                Log.Information($"Get Asignatura_seleccion, id:{id} solicitado");
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -94,7 +97,7 @@ namespace ProyectoUniversidad.Controllers
                     throw;
                 }
             }
-
+            Log.Information($"Post Asignatura_seleccion solicitado");
             return CreatedAtAction("GetAsignatura_seleccion", new { id = asignatura_seleccion.seleccion_id }, asignatura_seleccion);
         }
 
@@ -110,7 +113,7 @@ namespace ProyectoUniversidad.Controllers
 
             _context.Asignatura_seleccion.Remove(asignatura_seleccion);
             await _context.SaveChangesAsync();
-
+            Log.Information($"Delete Asignatura_seleccion, id: {id} solicitado");
             return NoContent();
         }
 

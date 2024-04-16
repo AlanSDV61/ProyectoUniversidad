@@ -63,6 +63,8 @@ namespace ProyectoUniversidad.Context
             modelBuilder.Entity<Asignatura_seleccion>()
                 .HasKey(p => new { p.seleccion_id, p.asignatura_id });
 
+            modelBuilder.Entity<estudianteSeleccion>()
+                .HasNoKey();
             //base.OnModelCreating(modelBuilder);
 
             //modelBuilder.Entity<Tipo_documento>().ToTable("Tipo_documento", schema: "dbo");
