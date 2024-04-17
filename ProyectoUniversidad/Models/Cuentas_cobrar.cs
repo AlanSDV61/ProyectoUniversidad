@@ -10,7 +10,7 @@ namespace ProyectoUniversidad.Models
         [Key]
         public int cuenta_cobrar_id { get; set; }
 
-        public required Estado_cuenta cuenta_estado { get; set; }
+        public required string cuenta_estado { get; set; }
 
         [ForeignKey("Seleccion")]
         public required int seleccion_id { get; set; }

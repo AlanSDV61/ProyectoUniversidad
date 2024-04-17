@@ -18,7 +18,7 @@ namespace UniversidadAPI.Models
         //public Estudiante Estudiante { get; set; }
 
         public required int seleccion_trimestre { get; set; }
-        public required Estado seleccion_estado { get; set; }
+        public required string seleccion_estado { get; set; }
         public required decimal seleccion_indice { get; set; }
         public required int seleccion_creditos { get; set; }
     }

@@ -48,13 +48,13 @@ namespace ProyectoUniversidad.Context
             //    .Property(e => e.seleccion_estado)
             //    .HasConversion<int>();
 
-            modelBuilder.Entity<Seleccion>()
-               .Property(e => e.seleccion_estado)
-               .HasConversion(new EnumToStringConverter<Estado>());
+            //modelBuilder.Entity<Seleccion>()
+            //   .Property(e => e.seleccion_estado)
+            //   .HasConversion(new EnumToStringConverter<Estado>());
 
-            modelBuilder.Entity<Cuentas_cobrar>()
-                .Property(e => e.cuenta_estado)
-                .HasConversion(new EnumToStringConverter<Estado_cuenta>());
+            //modelBuilder.Entity<Cuentas_cobrar>()
+            //    .Property(e => e.cuenta_estado)
+            //    .HasConversion(new EnumToStringConverter<Estado_cuenta>());
 
             //PK compuestas
             modelBuilder.Entity<Pensum>()
