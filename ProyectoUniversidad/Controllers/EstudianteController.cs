@@ -125,8 +125,54 @@ namespace ProyectoUniversidad.Controllers
             return selecciones;
         }
 
+
+        //[HttpGet("{id}/Asignaturas")]
+        //public async Task<ActionResult<IEnumerable<Asignatura>>> GetEstudianteAsignaturas(int id)
+        //{
+        //    // Busca el estudiante por su ID
+        //    var estudiante = await _context.Estudiante.FindAsync(id);
+
+        //    // Si el estudiante no existe, devuelve un error 404
+        //    if (estudiante == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    // Busca las selecciones del estudiante
+        //    var selecciones = await _context.Seleccion
+        //                                .Where(s => s.estudiante_id == id)
+        //                                .ToListAsync();
+
+        //    // Lista para almacenar las asignaturas
+        //    var asignaturas = new List<Asignatura>();
+
+        //    // Itera sobre cada selección del estudiante
+        //    foreach (var seleccion in selecciones)
+        //    {
+        //        // Busca las entradas en la tabla puente asignatura_seleccion para esta selección
+        //        var asignaturasSeleccion = await _context.Asignatura_seleccion
+        //                                        .Where(asignSel => asignSel.seleccion_id == seleccion.seleccion_id)
+        //                                        .ToListAsync();
+
+        //        // Para cada entrada en asignatura_seleccion, busca el objeto completo de Asignatura
+        //        foreach (var asignaturaSeleccion in asignaturasSeleccion)
+        //        {
+        //            // Busca la asignatura por su ID
+        //            var asignatura = await _context.Asignatura.FindAsync(asignaturaSeleccion.asignatura_id);
+
+        //            // Si la asignatura existe, agrégala a la lista de asignaturas
+        //            if (asignatura != null)
+        //            {
+        //                asignaturas.Add(asignatura);
+        //            }
+        //        }
+        //    }
+
+        //    return asignaturas;
+        //}
+
         [HttpGet("{id}/Asignaturas")]
-        public async Task<ActionResult<IEnumerable<string>>> GetEstudianteAsignaturas(int id)
+        public async Task<ActionResult<IEnumerable<AsignaturaViewModel>>> GetEstudianteAsignaturas(int id)
         {
             // Busca el estudiante por su ID
             var estudiante = await _context.Estudiante.FindAsync(id);
@@ -139,11 +185,11 @@ namespace ProyectoUniversidad.Controllers
 
             // Busca las selecciones del estudiante
             var selecciones = await _context.Seleccion
-                                    .Where(s => s.estudiante_id == id)
-                                    .ToListAsync();
+                                        .Where(s => s.estudiante_id == id)
+                                        .ToListAsync();
 
-            // Lista para almacenar los nombres de las asignaturas
-            var nombresAsignaturas = new List<string>();
+            // Lista para almacenar las asignaturas
+            var asignaturas = new List<AsignaturaViewModel>();
 
             // Itera sobre cada selección del estudiante
             foreach (var seleccion in selecciones)
@@ -153,23 +199,38 @@ namespace ProyectoUniversidad.Controllers
                                                 .Where(asignSel => asignSel.seleccion_id == seleccion.seleccion_id)
                                                 .ToListAsync();
 
-                // Para cada entrada en asignatura_seleccion, busca el nombre de la asignatura
+                // Para cada entrada en asignatura_seleccion, busca el objeto completo de Asignatura
                 foreach (var asignaturaSeleccion in asignaturasSeleccion)
                 {
-                    // Busca el nombre de la asignatura por su ID
+                    // Busca la asignatura por su ID
                     var asignatura = await _context.Asignatura.FindAsync(asignaturaSeleccion.asignatura_id);
 
-                    // Si la asignatura existe, agrega su nombre a la lista de nombres de asignaturas
+                    // Si la asignatura existe, crea un objeto AsignaturaViewModel y asigna el nombre del profesor
                     if (asignatura != null)
                     {
-                        nombresAsignaturas.Add(asignatura.asignatura_nombre);
-
+                        var profesor = await _context.Profesor.FindAsync(asignatura.profesor_id);
+                        if (profesor != null)
+                        {
+                            var asignaturaViewModel = new AsignaturaViewModel()
+                            {
+                                profesor_id = profesor.profesor_id,
+                                asignatura_id = asignatura.asignatura_id,
+                                asignatura_nombre = asignatura.asignatura_nombre,
+                                profesor_nombre = profesor.profesor_nombres + " " +profesor.profesor_apellidos,
+                                asignatura_aula = asignatura.asignatura_aula,
+                                asignatura_creditos = asignatura.asignatura_creditos
+                                
+                            };
+                            asignaturas.Add(asignaturaViewModel);
+                        }
                     }
                 }
             }
 
-            return nombresAsignaturas;
+            return asignaturas;
         }
+
+
 
         [HttpGet("{id}/CuentasPorCobrar")]
         public async Task<ActionResult<IEnumerable<Cuentas_cobrar>>> GetEstudianteCuentasPorCobrar(int id)
@@ -190,6 +251,8 @@ namespace ProyectoUniversidad.Controllers
 
             return Ok(cuentasPorCobrar[0]);
         }
+
+
 
         private bool EstudianteExists(int id)
         {
