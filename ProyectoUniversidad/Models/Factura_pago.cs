@@ -16,6 +16,6 @@ namespace ProyectoUniversidad.Models
 
         public required decimal factura_monto { get; set; }
 
-        public required DateOnly fecha_factura { get; set; }
+        public required DateTime fecha_factura { get; set; }
     }
 }

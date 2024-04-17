@@ -210,8 +210,10 @@ namespace ProyectoUniversidad.Controllers
             {
                 asignatura_id = asignatura.asignatura_id,
                 asignatura_nombre = asignatura.asignatura_nombre,
+                asignatura_aula = asignatura.asignatura_aula,
+                asignatura_creditos = asignatura.asignatura_creditos,
                 profesor_id = profesor.profesor_id,
-                profesor_nombre = profesor.profesor_nombres + profesor.profesor_apellidos,
+                profesor_nombre = profesor.profesor_nombres + " " + profesor.profesor_apellidos,
                 Estudiantes = estudiantes
             };
 
