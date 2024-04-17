@@ -15,7 +15,7 @@ namespace ProyectoUniversidad.Models
         [ForeignKey("Estudiante")]
         public required int estudiante_id { get; set; }
 
-        public required DateOnly factura_fecha { get; set; }
+        public required DateTime factura_fecha { get; set; }
 
         [ForeignKey("Metodo_pago")]
         public required int metodo_pago_id { get; set; }
