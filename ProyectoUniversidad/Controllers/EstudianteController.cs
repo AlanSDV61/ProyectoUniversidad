@@ -163,12 +163,34 @@ namespace ProyectoUniversidad.Controllers
                     if (asignatura != null)
                     {
                         nombresAsignaturas.Add(asignatura.asignatura_nombre);
+
                     }
                 }
             }
 
             return nombresAsignaturas;
         }
+
+        [HttpGet("{id}/CuentasPorCobrar")]
+        public async Task<ActionResult<IEnumerable<Cuentas_cobrar>>> GetEstudianteCuentasPorCobrar(int id)
+        {
+            // Busca el estudiante por su ID
+            var estudiante = await _context.Estudiante.FindAsync(id);
+
+            // Si el estudiante no existe, devuelve un error 404
+            if (estudiante == null)
+            {
+                return NotFound();
+            }
+
+            // Busca las cuentas por cobrar del estudiante
+            var cuentasPorCobrar = await _context.Cuentas_cobrar
+                                    .Where(c => c.estudiante_id == id)
+                                    .ToListAsync();
+
+            return cuentasPorCobrar;
+        }
+
         private bool EstudianteExists(int id)
         {
             return _context.Estudiante.Any(e => e.estudiante_id == id);

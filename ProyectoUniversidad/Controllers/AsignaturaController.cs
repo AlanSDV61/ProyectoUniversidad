@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProyectoUniversidad.Context;
+using ProyectoUniversidad.Models;
 using UniversidadAPI.Models;
 
 namespace ProyectoUniversidad.Controllers
@@ -99,6 +100,70 @@ namespace ProyectoUniversidad.Controllers
 
             return NoContent();
         }
+
+        //[HttpGet("EstudiantesPorAsignatura/{id}")]
+        //public async Task<ActionResult<IEnumerable<Estudiante>>> GetEstudiantesPorAsignatura(int id)
+        //{
+        //    var asignaturaSeleccion = await _context.Asignatura_seleccion
+        //                                        .Where(asigSel => asigSel.asignatura_id == id)
+        //                                        .ToListAsync();
+
+        //    var estudiantes = new List<Estudiante>();
+
+        //    foreach (var asigSel in asignaturaSeleccion)
+        //    {
+        //        var seleccion = await _context.Seleccion.FindAsync(asigSel.seleccion_id);
+
+        //        if (seleccion != null)
+        //        {
+        //            var estudiante = await _context.Estudiante.FindAsync(seleccion.estudiante_id);
+        //            if (estudiante != null)
+        //            {
+        //                estudiantes.Add(estudiante);
+        //            }
+        //        }
+        //    }
+
+        //    return estudiantes;
+        //}
+
+        [HttpGet("EstudiantesPorAsignatura/{id}")]
+        public async Task<ActionResult<AsignaturaEstudiantesViewModel>> GetEstudiantesPorAsignatura(int id)
+        {
+            var asignaturaSeleccion = await _context.Asignatura_seleccion
+                                                .Where(asigSel => asigSel.asignatura_id == id)
+                                                .ToListAsync();
+
+            var estudiantes = new List<Estudiante>();
+
+            foreach (var asigSel in asignaturaSeleccion)
+            {
+                var seleccion = await _context.Seleccion.FindAsync(asigSel.seleccion_id);
+
+                if (seleccion != null)
+                {
+                    var estudiante = await _context.Estudiante.FindAsync(seleccion.estudiante_id);
+                    if (estudiante != null)
+                    {
+                        estudiantes.Add(estudiante);
+                    }
+                }
+            }
+
+            // Obtener los datos de la asignatura
+            var asignatura = await _context.Asignatura.FindAsync(id);
+
+            // Construir el modelo de vista
+            var viewModel = new AsignaturaEstudiantesViewModel
+            {
+                asignatura_id = id,
+                asignatura_nombre = asignatura != null ? asignatura.asignatura_nombre : null,
+                Estudiantes = estudiantes
+            };
+
+            return viewModel;
+        }
+
 
         private bool AsignaturaExists(int id)
         {
