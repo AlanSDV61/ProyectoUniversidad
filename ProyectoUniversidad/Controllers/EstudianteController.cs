@@ -188,7 +188,7 @@ namespace ProyectoUniversidad.Controllers
                                     .Where(c => c.estudiante_id == id)
                                     .ToListAsync();
 
-            return cuentasPorCobrar;
+            return Ok(cuentasPorCobrar[0]);
         }
 
         private bool EstudianteExists(int id)
