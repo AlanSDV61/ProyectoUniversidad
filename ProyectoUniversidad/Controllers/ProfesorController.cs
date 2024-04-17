@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProyectoUniversidad.Context;
 using ProyectoUniversidad.Models;
+using UniversidadAPI.Models;
 
 namespace ProyectoUniversidad.Controllers
 {
@@ -99,6 +100,43 @@ namespace ProyectoUniversidad.Controllers
 
             return NoContent();
         }
+
+        [HttpGet("{id}/Asignaturas")]
+        public async Task<ActionResult<IEnumerable<Asignatura>>> GetProfesorAsignaturas(int id)
+        {
+            // Busca el profesor por su ID
+            var profesor = await _context.Profesor.FindAsync(id);
+
+            // Si el profesor no existe, devuelve un error 404
+            if (profesor == null)
+            {
+                return NotFound();
+            }
+
+            
+            var profesorAsignaturas = await _context.Asignatura
+                                                .Where(pa => pa.profesor_id == id)
+                                                .ToListAsync();
+
+            // Lista para almacenar las asignaturas
+            var asignaturas = new List<Asignatura>();
+
+            // Itera sobre cada entrada en la tabla puente
+            foreach (var profesorAsignatura in profesorAsignaturas)
+            {
+                // Busca la asignatura por su ID
+                var asignatura = await _context.Asignatura.FindAsync(profesorAsignatura.asignatura_id);
+
+                // Si la asignatura existe, agrégala a la lista de asignaturas
+                if (asignatura != null)
+                {
+                    asignaturas.Add(asignatura);
+                }
+            }
+
+            return asignaturas;
+        }
+
 
         private bool ProfesorExists(int id)
         {
