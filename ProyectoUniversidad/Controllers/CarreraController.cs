@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProyectoUniversidad.Context;
+using ProyectoUniversidad.Models;
 using UniversidadAPI.Models;
 
 namespace ProyectoUniversidad.Controllers
@@ -98,6 +99,48 @@ namespace ProyectoUniversidad.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [HttpGet("{idCarrera}/Pensum")]
+        public async Task<ActionResult<IEnumerable<PensumViewModel>>> GetPensumByCarrera(int idCarrera)
+        {
+            // Busca la carrera por su ID
+            var carrera = await _context.Carrera.FindAsync(idCarrera);
+
+            // Si la carrera no existe, devuelve un error 404
+            if (carrera == null)
+            {
+                return NotFound();
+            }
+
+            // Busca las filas de Pensum asociadas a la carrera específica
+            var pensum = await _context.Pensum
+                                        .Where(p => p.carrera_id == idCarrera)
+                                        .ToListAsync();
+
+            // Lista para almacenar los datos del pensum
+            var pensumViewModels = new List<PensumViewModel>();
+
+            // Itera sobre cada fila de Pensum
+            foreach (var filaPensum in pensum)
+            {
+                // Busca el nombre de la asignatura por su ID
+                var asignatura = await _context.Asignatura.FindAsync(filaPensum.asignatura_id);
+
+                // Si la asignatura existe, agrega su nombre junto con el trimestre del pensum a la lista de ViewModels
+                if (asignatura != null)
+                {
+                    var pensumViewModel = new PensumViewModel
+                    {
+                        asignatura_nombre = asignatura.asignatura_nombre,
+                        trimestre_pensum = filaPensum.pensum_trimestre,
+                        asignatura_creditos = asignatura.asignatura_creditos
+                    };
+                    pensumViewModels.Add(pensumViewModel);
+                }
+            }
+
+            return pensumViewModels;
         }
 
         private bool CarreraExists(int id)
