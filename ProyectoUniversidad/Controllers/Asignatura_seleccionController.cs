@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProyectoUniversidad.Context;
 using ProyectoUniversidad.Models;
+using Serilog;
 
 namespace ProyectoUniversidad.Controllers
 {
@@ -25,6 +26,7 @@ namespace ProyectoUniversidad.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Asignatura_seleccion>>> GetAsignatura_seleccion()
         {
+            Log.Information("GET request received for all Asignatura_seleccion items");
             return await _context.Asignatura_seleccion.ToListAsync();
         }
 
@@ -32,10 +34,12 @@ namespace ProyectoUniversidad.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Asignatura_seleccion>> GetAsignatura_seleccion(int id)
         {
+            Log.Information("GET request received for Asignatura_seleccion item with ID {Id}", id);
             var asignatura_seleccion = await _context.Asignatura_seleccion.FindAsync(id);
 
             if (asignatura_seleccion == null)
             {
+                Log.Warning("Asignatura_seleccion item with ID {Id} not found", id);
                 return NotFound();
             }
 
@@ -43,12 +47,13 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // PUT: api/Asignatura_seleccion/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAsignatura_seleccion(int id, Asignatura_seleccion asignatura_seleccion)
         {
+            Log.Information("PUT request received for Asignatura_seleccion item with ID {Id}", id);
             if (id != asignatura_seleccion.seleccion_id)
             {
+                Log.Warning("Mismatch in ID between request and resource: {ResourceId} vs {RequestId}", asignatura_seleccion.seleccion_id, id);
                 return BadRequest();
             }
 
@@ -62,6 +67,7 @@ namespace ProyectoUniversidad.Controllers
             {
                 if (!Asignatura_seleccionExists(id))
                 {
+                    Log.Warning("Asignatura_seleccion item with ID {Id} not found", id);
                     return NotFound();
                 }
                 else
@@ -74,10 +80,10 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // POST: api/Asignatura_seleccion
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Asignatura_seleccion>> PostAsignatura_seleccion(Asignatura_seleccion asignatura_seleccion)
         {
+            Log.Information("POST request received for new Asignatura_seleccion item");
             _context.Asignatura_seleccion.Add(asignatura_seleccion);
             try
             {
@@ -87,6 +93,7 @@ namespace ProyectoUniversidad.Controllers
             {
                 if (Asignatura_seleccionExists(asignatura_seleccion.seleccion_id))
                 {
+                    Log.Warning("Attempted to create duplicate Asignatura_seleccion item with ID {Id}", asignatura_seleccion.seleccion_id);
                     return Conflict();
                 }
                 else
@@ -102,9 +109,11 @@ namespace ProyectoUniversidad.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsignatura_seleccion(int id)
         {
+            Log.Information("DELETE request received for Asignatura_seleccion item with ID {Id}", id);
             var asignatura_seleccion = await _context.Asignatura_seleccion.FindAsync(id);
             if (asignatura_seleccion == null)
             {
+                Log.Warning("Asignatura_seleccion item with ID {Id} not found", id);
                 return NotFound();
             }
 

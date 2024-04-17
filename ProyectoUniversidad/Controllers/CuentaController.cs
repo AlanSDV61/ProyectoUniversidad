@@ -100,6 +100,33 @@ namespace ProyectoUniversidad.Controllers
             return NoContent();
         }
 
+        // POST: api/Cuenta/Login
+        [HttpPost("Login")]
+        public async Task<ActionResult<LoginResponse>> Login(LoginRequest loginRequest)
+        {
+            // Busca la cuenta por nombre de usuario en la base de datos
+            var cuenta = await _context.Cuenta.FirstOrDefaultAsync(c => c.cuenta_nombre == loginRequest.NombreUsuario);
+
+            if (cuenta != null && cuenta.cuenta_clave == loginRequest.ClaveUsuario)
+            {
+                // La cuenta y la contraseña son correctas
+                return Ok(new LoginResponse
+                {
+                    NombreUsuario = cuenta.cuenta_nombre,
+                    Rol = cuenta.rol_id, // Suponiendo que la cuenta tiene una relación con la entidad Rol
+                    Success = true
+                });
+            }
+            else
+            {
+                // La cuenta o la contraseña son incorrectas
+                return Ok(new LoginResponse
+                {
+                    Success = false
+                });
+            }
+        }
+
         private bool CuentaExists(int id)
         {
             return _context.Cuenta.Any(e => e.cuenta_id == id);

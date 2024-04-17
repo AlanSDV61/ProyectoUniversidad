@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProyectoUniversidad.Context;
 using ProyectoUniversidad.Models;
+using Serilog;
 using UniversidadAPI.Models;
 
 namespace ProyectoUniversidad.Controllers
@@ -26,6 +27,9 @@ namespace ProyectoUniversidad.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Asignatura>>> GetAsignatura()
         {
+            // Registro del evento de solicitud de obtención de todas las asignaturas
+            Log.Information("Solicitud de obtención de todas las asignaturas.");
+
             return await _context.Asignatura.ToListAsync();
         }
 
@@ -33,10 +37,15 @@ namespace ProyectoUniversidad.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Asignatura>> GetAsignatura(int id)
         {
+            // Registro del evento de solicitud de obtención de una asignatura por su ID
+            Log.Information("Solicitud de obtención de la asignatura con ID {ID}.", id);
+
             var asignatura = await _context.Asignatura.FindAsync(id);
 
             if (asignatura == null)
             {
+                // Registro del evento cuando no se encuentra la asignatura
+                Log.Warning("La asignatura con ID {ID} no fue encontrada.", id);
                 return NotFound();
             }
 
@@ -50,6 +59,8 @@ namespace ProyectoUniversidad.Controllers
         {
             if (id != asignatura.asignatura_id)
             {
+                // Registro del evento de error de solicitud incorrecta
+                Log.Error("La ID de la asignatura en la ruta no coincide con la ID de la asignatura proporcionada en el cuerpo de la solicitud.");
                 return BadRequest();
             }
 
@@ -63,6 +74,8 @@ namespace ProyectoUniversidad.Controllers
             {
                 if (!AsignaturaExists(id))
                 {
+                    // Registro del evento cuando la asignatura no se encuentra para actualización
+                    Log.Warning("La asignatura con ID {ID} no fue encontrada para actualización.", id);
                     return NotFound();
                 }
                 else
@@ -70,6 +83,9 @@ namespace ProyectoUniversidad.Controllers
                     throw;
                 }
             }
+
+            // Registro del evento de actualización exitosa de la asignatura
+            Log.Information("Asignatura con ID {ID} actualizada correctamente.", id);
 
             return NoContent();
         }
@@ -82,6 +98,9 @@ namespace ProyectoUniversidad.Controllers
             _context.Asignatura.Add(asignatura);
             await _context.SaveChangesAsync();
 
+            // Registro del evento de creación exitosa de una nueva asignatura
+            Log.Information("Nueva asignatura creada con ID {ID}.", asignatura.asignatura_id);
+
             return CreatedAtAction("GetAsignatura", new { id = asignatura.asignatura_id }, asignatura);
         }
 
@@ -92,77 +111,19 @@ namespace ProyectoUniversidad.Controllers
             var asignatura = await _context.Asignatura.FindAsync(id);
             if (asignatura == null)
             {
+                // Registro del evento cuando la asignatura no se encuentra para eliminación
+                Log.Warning("La asignatura con ID {ID} no fue encontrada para eliminación.", id);
                 return NotFound();
             }
 
             _context.Asignatura.Remove(asignatura);
             await _context.SaveChangesAsync();
 
+            // Registro del evento de eliminación exitosa de la asignatura
+            Log.Information("Asignatura con ID {ID} eliminada correctamente.", id);
+
             return NoContent();
         }
-
-        //[HttpGet("EstudiantesPorAsignatura/{id}")]
-        //public async Task<ActionResult<IEnumerable<Estudiante>>> GetEstudiantesPorAsignatura(int id)
-        //{
-        //    var asignaturaSeleccion = await _context.Asignatura_seleccion
-        //                                        .Where(asigSel => asigSel.asignatura_id == id)
-        //                                        .ToListAsync();
-
-        //    var estudiantes = new List<Estudiante>();
-
-        //    foreach (var asigSel in asignaturaSeleccion)
-        //    {
-        //        var seleccion = await _context.Seleccion.FindAsync(asigSel.seleccion_id);
-
-        //        if (seleccion != null)
-        //        {
-        //            var estudiante = await _context.Estudiante.FindAsync(seleccion.estudiante_id);
-        //            if (estudiante != null)
-        //            {
-        //                estudiantes.Add(estudiante);
-        //            }
-        //        }
-        //    }
-
-        //    return estudiantes;
-        //}
-
-        //[HttpGet("EstudiantesPorAsignatura/{id}")]
-        //public async Task<ActionResult<AsignaturaEstudiantesViewModel>> GetEstudiantesPorAsignatura(int id)
-        //{
-        //    var asignaturaSeleccion = await _context.Asignatura_seleccion
-        //                                        .Where(asigSel => asigSel.asignatura_id == id)
-        //                                        .ToListAsync();
-
-        //    var estudiantes = new List<Estudiante>();
-
-        //    foreach (var asigSel in asignaturaSeleccion)
-        //    {
-        //        var seleccion = await _context.Seleccion.FindAsync(asigSel.seleccion_id);
-
-        //        if (seleccion != null)
-        //        {
-        //            var estudiante = await _context.Estudiante.FindAsync(seleccion.estudiante_id);
-        //            if (estudiante != null)
-        //            {
-        //                estudiantes.Add(estudiante);
-        //            }
-        //        }
-        //    }
-
-        //    // Obtener los datos de la asignatura
-        //    var asignatura = await _context.Asignatura.FindAsync(id);
-
-        //    // Construir el modelo de vista
-        //    var viewModel = new AsignaturaEstudiantesViewModel
-        //    {
-        //        asignatura_id = id,
-        //        asignatura_nombre = asignatura != null ? asignatura.asignatura_nombre : null,
-        //        Estudiantes = estudiantes
-        //    };
-
-        //    return viewModel;
-        //}
 
         [HttpGet("EstudiantesPorAsignatura/{id}")]
         public async Task<ActionResult<AsignaturaEstudiantesViewModel>> GetEstudiantesPorAsignatura(int id)

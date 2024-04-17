@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProyectoUniversidad.Context;
 using ProyectoUniversidad.Models;
+using Serilog;
 using UniversidadAPI.Models;
 
 namespace ProyectoUniversidad.Controllers
@@ -26,6 +27,9 @@ namespace ProyectoUniversidad.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Carrera>>> GetCarrera()
         {
+            // Registro del evento de solicitud de obtención de todas las carreras
+            Log.Information("Solicitud de obtención de todas las carreras.");
+
             return await _context.Carrera.ToListAsync();
         }
 
@@ -33,10 +37,15 @@ namespace ProyectoUniversidad.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Carrera>> GetCarrera(int id)
         {
+            // Registro del evento de solicitud de obtención de una carrera por su ID
+            Log.Information("Solicitud de obtención de la carrera con ID {ID}.", id);
+
             var carrera = await _context.Carrera.FindAsync(id);
 
             if (carrera == null)
             {
+                // Registro del evento cuando no se encuentra la carrera
+                Log.Warning("La carrera con ID {ID} no fue encontrada.", id);
                 return NotFound();
             }
 
@@ -44,12 +53,13 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // PUT: api/Carrera/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCarrera(int id, Carrera carrera)
         {
             if (id != carrera.carrera_id)
             {
+                // Registro del evento de error de solicitud incorrecta
+                Log.Error("La ID de la carrera en la ruta no coincide con la ID de la carrera proporcionada en el cuerpo de la solicitud.");
                 return BadRequest();
             }
 
@@ -63,6 +73,8 @@ namespace ProyectoUniversidad.Controllers
             {
                 if (!CarreraExists(id))
                 {
+                    // Registro del evento cuando la carrera no se encuentra para actualización
+                    Log.Warning("La carrera con ID {ID} no fue encontrada para actualización.", id);
                     return NotFound();
                 }
                 else
@@ -71,16 +83,21 @@ namespace ProyectoUniversidad.Controllers
                 }
             }
 
+            // Registro del evento de actualización exitosa de la carrera
+            Log.Information("Carrera con ID {ID} actualizada correctamente.", id);
+
             return NoContent();
         }
 
         // POST: api/Carrera
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Carrera>> PostCarrera(Carrera carrera)
         {
             _context.Carrera.Add(carrera);
             await _context.SaveChangesAsync();
+
+            // Registro del evento de creación exitosa de una nueva carrera
+            Log.Information("Nueva carrera creada con ID {ID}.", carrera.carrera_id);
 
             return CreatedAtAction("GetCarrera", new { id = carrera.carrera_id }, carrera);
         }
@@ -92,15 +109,21 @@ namespace ProyectoUniversidad.Controllers
             var carrera = await _context.Carrera.FindAsync(id);
             if (carrera == null)
             {
+                // Registro del evento cuando la carrera no se encuentra para eliminación
+                Log.Warning("La carrera con ID {ID} no fue encontrada para eliminación.", id);
                 return NotFound();
             }
 
             _context.Carrera.Remove(carrera);
             await _context.SaveChangesAsync();
 
+            // Registro del evento de eliminación exitosa de la carrera
+            Log.Information("Carrera con ID {ID} eliminada correctamente.", id);
+
             return NoContent();
         }
 
+        // GET: api/Carrera/{idCarrera}/Pensum
         [HttpGet("{idCarrera}/Pensum")]
         public async Task<ActionResult<IEnumerable<PensumViewModel>>> GetPensumByCarrera(int idCarrera)
         {
@@ -110,6 +133,7 @@ namespace ProyectoUniversidad.Controllers
             // Si la carrera no existe, devuelve un error 404
             if (carrera == null)
             {
+                Log.Warning("No se encontró la carrera con ID {ID}.", idCarrera);
                 return NotFound();
             }
 
@@ -139,6 +163,9 @@ namespace ProyectoUniversidad.Controllers
                     pensumViewModels.Add(pensumViewModel);
                 }
             }
+
+            // Registro del evento de obtención exitosa del pensum de la carrera
+            Log.Information("Pensum de la carrera con ID {ID} obtenido correctamente.", idCarrera);
 
             return pensumViewModels;
         }
