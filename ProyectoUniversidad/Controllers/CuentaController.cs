@@ -111,7 +111,7 @@ namespace ProyectoUniversidad.Controllers
                 return Ok(new LoginResponse
                 {
                     NombreUsuario = cuenta.cuenta_nombre,
-                    Rol = cuenta.rol_id, // Suponiendo que la cuenta tiene una relación con la entidad Rol
+                    Rol = cuenta.rol_id,
                     Success = true
                 });
             }

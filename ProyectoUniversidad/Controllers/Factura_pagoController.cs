@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProyectoUniversidad.Context;
 using ProyectoUniversidad.Models;
+using Serilog;
 
 namespace ProyectoUniversidad.Controllers
 {
@@ -25,6 +26,7 @@ namespace ProyectoUniversidad.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Factura_pago>>> GetFactura_pago()
         {
+            Log.Information("Solicitud de obtención de todas las facturas de pago.");
             return await _context.Factura_pago.ToListAsync();
         }
 
@@ -32,10 +34,12 @@ namespace ProyectoUniversidad.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Factura_pago>> GetFactura_pago(int id)
         {
+            Log.Information("Solicitud de obtención de la factura de pago con ID {ID}.", id);
             var factura_pago = await _context.Factura_pago.FindAsync(id);
 
             if (factura_pago == null)
             {
+                Log.Warning("La factura de pago con ID {ID} no fue encontrada.", id);
                 return NotFound();
             }
 
@@ -43,12 +47,12 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // PUT: api/Factura_pago/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutFactura_pago(int id, Factura_pago factura_pago)
         {
             if (id != factura_pago.pago_id)
             {
+                Log.Error("La ID de la factura de pago en la ruta no coincide con la ID proporcionada en el cuerpo de la solicitud.");
                 return BadRequest();
             }
 
@@ -57,11 +61,13 @@ namespace ProyectoUniversidad.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                Log.Information("Factura de pago con ID {ID} actualizada correctamente.", id);
             }
             catch (DbUpdateConcurrencyException)
             {
                 if (!Factura_pagoExists(id))
                 {
+                    Log.Warning("La factura de pago con ID {ID} no fue encontrada para actualización.", id);
                     return NotFound();
                 }
                 else
@@ -74,13 +80,13 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // POST: api/Factura_pago
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Factura_pago>> PostFactura_pago(Factura_pago factura_pago)
         {
             _context.Factura_pago.Add(factura_pago);
             await _context.SaveChangesAsync();
 
+            Log.Information("Nueva factura de pago creada con ID {ID}.", factura_pago.pago_id);
             return CreatedAtAction("GetFactura_pago", new { id = factura_pago.pago_id }, factura_pago);
         }
 
@@ -91,12 +97,14 @@ namespace ProyectoUniversidad.Controllers
             var factura_pago = await _context.Factura_pago.FindAsync(id);
             if (factura_pago == null)
             {
+                Log.Warning("La factura de pago con ID {ID} no fue encontrada para eliminación.", id);
                 return NotFound();
             }
 
             _context.Factura_pago.Remove(factura_pago);
             await _context.SaveChangesAsync();
 
+            Log.Information("Factura de pago con ID {ID} eliminada correctamente.", id);
             return NoContent();
         }
 

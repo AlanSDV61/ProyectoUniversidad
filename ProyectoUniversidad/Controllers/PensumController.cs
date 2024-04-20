@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProyectoUniversidad.Context;
 using ProyectoUniversidad.Models;
+using Serilog;
 
 namespace ProyectoUniversidad.Controllers
 {
@@ -25,6 +26,7 @@ namespace ProyectoUniversidad.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Pensum>>> GetPensum()
         {
+            Log.Information("Solicitud de obtención de todos los pensum.");
             return await _context.Pensum.ToListAsync();
         }
 
@@ -32,10 +34,12 @@ namespace ProyectoUniversidad.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Pensum>> GetPensum(int id)
         {
+            Log.Information("Solicitud de obtención del pensum con ID {ID}.", id);
             var pensum = await _context.Pensum.FindAsync(id);
 
             if (pensum == null)
             {
+                Log.Warning("El pensum con ID {ID} no fue encontrado.", id);
                 return NotFound();
             }
 
@@ -43,12 +47,12 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // PUT: api/Pensum/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPensum(int id, Pensum pensum)
         {
             if (id != pensum.carrera_id)
             {
+                Log.Error("La ID del pensum en la ruta no coincide con la ID proporcionada en el cuerpo de la solicitud.");
                 return BadRequest();
             }
 
@@ -57,11 +61,13 @@ namespace ProyectoUniversidad.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                Log.Information("Pensum con ID {ID} actualizado correctamente.", id);
             }
             catch (DbUpdateConcurrencyException)
             {
                 if (!PensumExists(id))
                 {
+                    Log.Warning("El pensum con ID {ID} no fue encontrado para actualización.", id);
                     return NotFound();
                 }
                 else
@@ -74,7 +80,6 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // POST: api/Pensum
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Pensum>> PostPensum(Pensum pensum)
         {
@@ -82,11 +87,14 @@ namespace ProyectoUniversidad.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                Log.Information("Nuevo pensum creado con ID {ID}.", pensum.carrera_id);
+                return CreatedAtAction("GetPensum", new { id = pensum.carrera_id }, pensum);
             }
             catch (DbUpdateException)
             {
                 if (PensumExists(pensum.carrera_id))
                 {
+                    Log.Warning("El pensum con ID {ID} ya existe.", pensum.carrera_id);
                     return Conflict();
                 }
                 else
@@ -94,8 +102,6 @@ namespace ProyectoUniversidad.Controllers
                     throw;
                 }
             }
-
-            return CreatedAtAction("GetPensum", new { id = pensum.carrera_id }, pensum);
         }
 
         // DELETE: api/Pensum/5
@@ -105,12 +111,14 @@ namespace ProyectoUniversidad.Controllers
             var pensum = await _context.Pensum.FindAsync(id);
             if (pensum == null)
             {
+                Log.Warning("El pensum con ID {ID} no fue encontrado para eliminación.", id);
                 return NotFound();
             }
 
             _context.Pensum.Remove(pensum);
             await _context.SaveChangesAsync();
 
+            Log.Information("Pensum con ID {ID} eliminado correctamente.", id);
             return NoContent();
         }
 

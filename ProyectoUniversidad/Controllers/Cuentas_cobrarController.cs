@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProyectoUniversidad.Context;
 using ProyectoUniversidad.Models;
+using Serilog;
 
 namespace ProyectoUniversidad.Controllers
 {
@@ -25,6 +26,7 @@ namespace ProyectoUniversidad.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Cuentas_cobrar>>> GetCuentas_cobrar()
         {
+            Log.Information("Solicitud de obtención de todas las cuentas por cobrar.");
             return await _context.Cuentas_cobrar.ToListAsync();
         }
 
@@ -32,10 +34,12 @@ namespace ProyectoUniversidad.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Cuentas_cobrar>> GetCuentas_cobrar(int id)
         {
+            Log.Information("Solicitud de obtención de la cuenta por cobrar con ID {ID}.", id);
             var cuentas_cobrar = await _context.Cuentas_cobrar.FindAsync(id);
 
             if (cuentas_cobrar == null)
             {
+                Log.Warning("La cuenta por cobrar con ID {ID} no fue encontrada.", id);
                 return NotFound();
             }
 
@@ -43,12 +47,12 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // PUT: api/Cuentas_cobrar/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCuentas_cobrar(int id, Cuentas_cobrar cuentas_cobrar)
         {
             if (id != cuentas_cobrar.cuenta_cobrar_id)
             {
+                Log.Error("La ID de la cuenta por cobrar en la ruta no coincide con la ID proporcionada en el cuerpo de la solicitud.");
                 return BadRequest();
             }
 
@@ -57,11 +61,13 @@ namespace ProyectoUniversidad.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                Log.Information("Cuenta por cobrar con ID {ID} actualizada correctamente.", id);
             }
             catch (DbUpdateConcurrencyException)
             {
                 if (!Cuentas_cobrarExists(id))
                 {
+                    Log.Warning("La cuenta por cobrar con ID {ID} no fue encontrada para actualización.", id);
                     return NotFound();
                 }
                 else
@@ -74,13 +80,13 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // POST: api/Cuentas_cobrar
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Cuentas_cobrar>> PostCuentas_cobrar(Cuentas_cobrar cuentas_cobrar)
         {
             _context.Cuentas_cobrar.Add(cuentas_cobrar);
             await _context.SaveChangesAsync();
 
+            Log.Information("Nueva cuenta por cobrar creada con ID {ID}.", cuentas_cobrar.cuenta_cobrar_id);
             return CreatedAtAction("GetCuentas_cobrar", new { id = cuentas_cobrar.cuenta_cobrar_id }, cuentas_cobrar);
         }
 
@@ -91,12 +97,14 @@ namespace ProyectoUniversidad.Controllers
             var cuentas_cobrar = await _context.Cuentas_cobrar.FindAsync(id);
             if (cuentas_cobrar == null)
             {
+                Log.Warning("La cuenta por cobrar con ID {ID} no fue encontrada para eliminación.", id);
                 return NotFound();
             }
 
             _context.Cuentas_cobrar.Remove(cuentas_cobrar);
             await _context.SaveChangesAsync();
 
+            Log.Information("Cuenta por cobrar con ID {ID} eliminada correctamente.", id);
             return NoContent();
         }
 

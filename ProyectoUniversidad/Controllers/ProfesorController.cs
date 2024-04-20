@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProyectoUniversidad.Context;
 using ProyectoUniversidad.Models;
+using Serilog;
 using UniversidadAPI.Models;
 
 namespace ProyectoUniversidad.Controllers
@@ -26,6 +27,7 @@ namespace ProyectoUniversidad.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Profesor>>> GetProfesor()
         {
+            Log.Information("Solicitud de obtención de todos los profesores.");
             return await _context.Profesor.ToListAsync();
         }
 
@@ -33,10 +35,12 @@ namespace ProyectoUniversidad.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Profesor>> GetProfesor(int id)
         {
+            Log.Information("Solicitud de obtención del profesor con ID {ID}.", id);
             var profesor = await _context.Profesor.FindAsync(id);
 
             if (profesor == null)
             {
+                Log.Warning("El profesor con ID {ID} no fue encontrado.", id);
                 return NotFound();
             }
 
@@ -44,12 +48,12 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // PUT: api/Profesor/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProfesor(int id, Profesor profesor)
         {
             if (id != profesor.profesor_id)
             {
+                Log.Error("La ID del profesor en la ruta no coincide con la ID proporcionada en el cuerpo de la solicitud.");
                 return BadRequest();
             }
 
@@ -58,11 +62,13 @@ namespace ProyectoUniversidad.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                Log.Information("Profesor con ID {ID} actualizado correctamente.", id);
             }
             catch (DbUpdateConcurrencyException)
             {
                 if (!ProfesorExists(id))
                 {
+                    Log.Warning("El profesor con ID {ID} no fue encontrado para actualización.", id);
                     return NotFound();
                 }
                 else
@@ -75,13 +81,13 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // POST: api/Profesor
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Profesor>> PostProfesor(Profesor profesor)
         {
             _context.Profesor.Add(profesor);
             await _context.SaveChangesAsync();
 
+            Log.Information("Nuevo profesor creado con ID {ID}.", profesor.profesor_id);
             return CreatedAtAction("GetProfesor", new { id = profesor.profesor_id }, profesor);
         }
 
@@ -92,12 +98,14 @@ namespace ProyectoUniversidad.Controllers
             var profesor = await _context.Profesor.FindAsync(id);
             if (profesor == null)
             {
+                Log.Warning("El profesor con ID {ID} no fue encontrado para eliminación.", id);
                 return NotFound();
             }
 
             _context.Profesor.Remove(profesor);
             await _context.SaveChangesAsync();
 
+            Log.Information("Profesor con ID {ID} eliminado correctamente.", id);
             return NoContent();
         }
 
@@ -110,10 +118,10 @@ namespace ProyectoUniversidad.Controllers
             // Si el profesor no existe, devuelve un error 404
             if (profesor == null)
             {
+                Log.Warning("No se encontró el profesor con ID {ID}.", id);
                 return NotFound();
             }
 
-            
             var profesorAsignaturas = await _context.Asignatura
                                                 .Where(pa => pa.profesor_id == id)
                                                 .ToListAsync();
@@ -134,9 +142,9 @@ namespace ProyectoUniversidad.Controllers
                 }
             }
 
+            Log.Information("Asignaturas del profesor con ID {ID} obtenidas correctamente.", id);
             return asignaturas;
         }
-
 
         private bool ProfesorExists(int id)
         {

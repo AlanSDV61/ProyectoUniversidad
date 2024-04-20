@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProyectoUniversidad.Context;
 using ProyectoUniversidad.Models;
+using Serilog;
 
 namespace ProyectoUniversidad.Controllers
 {
@@ -25,6 +26,7 @@ namespace ProyectoUniversidad.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Rol>>> GetRol()
         {
+            Log.Information("Solicitud de obtención de todos los roles.");
             return await _context.Rol.ToListAsync();
         }
 
@@ -32,10 +34,12 @@ namespace ProyectoUniversidad.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Rol>> GetRol(int id)
         {
+            Log.Information("Solicitud de obtención del rol con ID {ID}.", id);
             var rol = await _context.Rol.FindAsync(id);
 
             if (rol == null)
             {
+                Log.Warning("El rol con ID {ID} no fue encontrado.", id);
                 return NotFound();
             }
 
@@ -43,12 +47,12 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // PUT: api/Rol/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutRol(int id, Rol rol)
         {
             if (id != rol.rol_id)
             {
+                Log.Error("La ID del rol en la ruta no coincide con la ID proporcionada en el cuerpo de la solicitud.");
                 return BadRequest();
             }
 
@@ -57,11 +61,13 @@ namespace ProyectoUniversidad.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                Log.Information("Rol con ID {ID} actualizado correctamente.", id);
             }
             catch (DbUpdateConcurrencyException)
             {
                 if (!RolExists(id))
                 {
+                    Log.Warning("El rol con ID {ID} no fue encontrado para actualización.", id);
                     return NotFound();
                 }
                 else
@@ -74,13 +80,13 @@ namespace ProyectoUniversidad.Controllers
         }
 
         // POST: api/Rol
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Rol>> PostRol(Rol rol)
         {
             _context.Rol.Add(rol);
             await _context.SaveChangesAsync();
 
+            Log.Information("Nuevo rol creado con ID {ID}.", rol.rol_id);
             return CreatedAtAction("GetRol", new { id = rol.rol_id }, rol);
         }
 
@@ -91,12 +97,14 @@ namespace ProyectoUniversidad.Controllers
             var rol = await _context.Rol.FindAsync(id);
             if (rol == null)
             {
+                Log.Warning("El rol con ID {ID} no fue encontrado para eliminación.", id);
                 return NotFound();
             }
 
             _context.Rol.Remove(rol);
             await _context.SaveChangesAsync();
 
+            Log.Information("Rol con ID {ID} eliminado correctamente.", id);
             return NoContent();
         }
 
